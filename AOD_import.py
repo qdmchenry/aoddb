@@ -1,16 +1,21 @@
 #!/usr/bin/env python
 from __future__ import print_function, unicode_literals
-import subprocess
+import sys
 import os
 import requests
+from datetime import datetime, timedelta
 
 """
 npp_viirs_AOD550_20250805_171657_alaska_polar_fit.tif
 noaa21_viirs_AOD550_20250805_164830_alaska_polar_fit.tif
 noaa20_viirs_AOD550_20250805_155844_alaska_polar_fit.tif
 """
+
+today = datetime.today().strftime("%Y%m%d")
+yesterday = datetime.today() - timedelta(days=1)
+yesterday = yesterday.strftime("%Y%m%d")
 # Set download directory
-DOWNLOAD_DIR = "/home/ags/ArcAQ/AOD_tifs/"
+DOWNLOAD_DIR = "/Users/qdmchenry/aoddb/tif"
 if not os.path.exists(DOWNLOAD_DIR):
     os.makedirs(DOWNLOAD_DIR)
 
@@ -31,7 +36,19 @@ def fetch_product_index():
 def download_file(remote_path):
     full_url = remote_path
     filename = os.path.basename(remote_path)
-    local_path = os.path.join(DOWNLOAD_DIR, filename)
+
+    if "noaa20" in filename:
+        prefix = "noaa20"
+    elif "noaa21" in filename:
+        prefix = "noaa21"
+    else:
+        prefix = "npp"
+
+    subdir = os.path.join(DOWNLOAD_DIR, prefix)
+    if not os.path.exists(subdir):
+        os.makedirs(subdir)
+
+    local_path = os.path.join(subdir, filename)
 
     if os.path.exists(local_path):
         print("[SKIP] Already exists:", local_path)
@@ -39,10 +56,14 @@ def download_file(remote_path):
 
     print("[DL] Downloading:", full_url)
     r = requests.get(full_url, stream=True)
-    if r.status_code != 200:
+    if r.status_code != 200 or "viirs_AOD550" not in filename:
         print("[ERROR] Status {} for {}".format(r.status_code, full_url))
         return None
+    
+    if yesterday in filename:
+        sys.exit()
 
+    local_path = os.path.join(prefix, local_path)
     with open(local_path, 'wb') as f:
         for chunk in r.iter_content(4096):
             f.write(chunk)
@@ -62,6 +83,7 @@ def main():
             continue
 
     print("[DONE] All downloads and conversions complete.")
+    print("[INFO] Sorting.")
 
 if __name__ == "__main__":
     main()
