@@ -36,7 +36,7 @@ def fetch_product_index():
 def download_file(remote_path):
     full_url = remote_path
     filename = os.path.basename(remote_path)
-    local_path = os.path.join(full_url, filename)
+    local_path = os.path.join(DOWNLOAD_DIR, filename)
 
     if os.path.exists(local_path):
         print("[SKIP] Already exists:", local_path)
