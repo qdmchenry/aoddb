@@ -48,7 +48,7 @@ if __name__ == "__main__":
         "--source_dir",
         "-i",
         type=str,
-        default="/home/ags/ArcAQ/AOD_tifs",
+        default="/home/ags/ArcAQ/AOD_tif",
         help="Source directory containing new .tif files"
     )
     parser.add_argument(
