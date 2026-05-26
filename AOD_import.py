@@ -36,19 +36,7 @@ def fetch_product_index():
 def download_file(remote_path):
     full_url = remote_path
     filename = os.path.basename(remote_path)
-
-    if "noaa20" in filename:
-        prefix = "noaa20"
-    elif "noaa21" in filename:
-        prefix = "noaa21"
-    else:
-        prefix = "npp"
-
-    subdir = os.path.join(DOWNLOAD_DIR, prefix)
-    if not os.path.exists(subdir):
-        os.makedirs(subdir)
-
-    local_path = os.path.join(subdir, filename)
+    local_path = os.path.join(full_url, filename)
 
     if os.path.exists(local_path):
         print("[SKIP] Already exists:", local_path)
@@ -63,7 +51,6 @@ def download_file(remote_path):
     if yesterday in filename:
         sys.exit()
 
-    local_path = os.path.join(prefix, local_path)
     with open(local_path, 'wb') as f:
         for chunk in r.iter_content(4096):
             f.write(chunk)
