@@ -1,7 +1,7 @@
 #!/bin/bash -l
 echo "INFO:Starting run at $(date)"
 
-SCRIPT=/home/ags/AOD_scripts/AOD_arcpy.py
+SCRIPT=/home/ags/aoddb/AOD_arcpy.py
 
 CONFIG_FILE="/home/ags/ArcAQ/server-files/fire-dev-2/AOD.ini"
 SD_DIR=$(awk -F "=" '/^\[Pub\]/ {f=1} f==1 && /^sdDIR/ {print $2; f=0}' "$CONFIG_FILE")
@@ -12,7 +12,7 @@ echo $SD_PATH
 
 echo "INFO: Downloading and Converting Imagery"
 # TODO: ADD IN PARAMS FOR FILEPATHS
-conda run -n pyNCL python /home/ags/AOD_scripts/AOD_import.py
+conda run -n pyNCL python /home/ags/aoddb/AOD_import.py
 
 echo "INFO: Ingesting Imagery"
 
