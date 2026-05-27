@@ -17,7 +17,7 @@ today = datetime.today().strftime("%Y%m%d")
 yesterday = datetime.today() - timedelta(days=1)
 yesterday = yesterday.strftime("%Y%m%d")
 # Set download directory
-DOWNLOAD_DIR = "/home/ags/ArcAQ/AOD_tif"
+DOWNLOAD_DIR = "./tif"
 if not os.path.exists(DOWNLOAD_DIR):
     os.makedirs(DOWNLOAD_DIR)
 
@@ -56,7 +56,7 @@ def download_AOD_file(remote_path):
         return None
     
     if yesterday in filename:
-        return
+        return "kill"
 
     with open(local_path, 'wb') as f:
         for chunk in r.iter_content(4096):
@@ -81,7 +81,7 @@ def download_TC_file(remote_path):
         return None
 
     if yesterday in filename:
-        return
+        return "kill"
 
     with open(local_path, 'wb') as f:
         for chunk in r.iter_content(4096):
@@ -98,6 +98,8 @@ def main():
 
     for remote_path in tif_paths:
         local_path = download_AOD_file(remote_path)
+        if local_path == "kill":
+            break
         if not local_path:
             continue
 
@@ -110,6 +112,8 @@ def main():
 
     for remote_path in tif_paths:
         local_path = download_TC_file(remote_path)
+        if local_path == "kill":
+            break
         if not local_path:
             continue
 
