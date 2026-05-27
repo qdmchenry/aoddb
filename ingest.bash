@@ -1,6 +1,8 @@
 #!/bin/bash -l
 echo "INFO:Starting run at $(date)"
 
+rm -rf /home/ags/ArcAQ/AOD_tif/*
+
 SCRIPT=/home/ags/aoddb/AOD_arcpy.py
 
 CONFIG_FILE="/home/ags/ArcAQ/server-files/fire-dev-2/AOD.ini"

@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     newTifs = SubsetNewTifs(sourceDir)
     metadata = []
-    models = ['N20', 'N21', 'NPP'] # [
+    models = ['AOD', 'TrueColor'] # [
 
 #1. noaa21_viirs_AOD550_20250805_164830_alaska_polar_fit.tif
 #2. noaa21_viirs_AOD550_20250805_164830_alaska_polar_fit
@@ -100,12 +100,10 @@ if __name__ == "__main__":
         """Parses the filename to extract model and time information."""
         fileName = os.path.basename(filePath)
         fileSplit = fileName.split("_")
-        if "noaa20" in fileName:
-            model = models[0] 
-        elif "noaa21" in fileName:
-            model = models[1]
+        if "AOD" in fileName:
+            model = models[0]
         else:
-            model = models[2]
+            model = models[1]
 
         print(f"parsing filename: {fileName}")
         modelDate = fileSplit[3]
