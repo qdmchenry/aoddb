@@ -17,7 +17,7 @@ today = datetime.today().strftime("%Y%m%d")
 yesterday = datetime.today() - timedelta(days=1)
 yesterday = yesterday.strftime("%Y%m%d")
 # Set download directory
-DOWNLOAD_DIR = "./tif"
+DOWNLOAD_DIR = "/home/ags/ArcAQ/AOD_tif"
 if not os.path.exists(DOWNLOAD_DIR):
     os.makedirs(DOWNLOAD_DIR)
 
