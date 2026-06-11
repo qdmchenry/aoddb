@@ -96,18 +96,26 @@ if __name__ == "__main__":
 #4. noaa21 viirs AOD550 20250805 164830  alaska polar   fit
 #   0       1       2       3       4       5   6       7
 
+#noaa20.20260611.1728_true_color_polar.tif
+#  0       1      2    3     4      5
+#
+
     def parse_file_info(filePath):
         """Parses the filename to extract model and time information."""
         fileName = os.path.basename(filePath)
-        fileSplit = fileName.split("_")
+        fileSplit = re.split(r'[_.]', fileName)
         if "AOD" in fileName:
             model = models[0]
         else:
             model = models[1]
 
         print(f"parsing filename: {fileName}")
-        modelDate = fileSplit[3]
-        modelTime = fileSplit[4]
+        if model == models[0]:
+            modelDate = fileSplit[3]
+            modelTime = fileSplit[4]
+        else:
+            modelDate = fileSplit[1]
+            modelTime = fileSplit[2]
         
         return fileName, model, modelDate, modelTime
 
@@ -134,7 +142,7 @@ if __name__ == "__main__":
         mPub.addDataFromPath(lyrPath)
         lyr = mPub.listLayers(fileName)[0]
         lyr.name = lyr.name.replace(fileName, label)
-        arcpy.management.ApplySymbologyFromLayer(lyr, symPath)
+        #arcpy.management.ApplySymbologyFromLayer(lyr, symPath)
         return lyr.name
 
     for filePath in newTifs:
@@ -148,7 +156,7 @@ if __name__ == "__main__":
         tmpdict["fileName"] = filePath
         
         # Create Layer Name
-        label = f"AOD {str(modelDateTime.strftime('%H:%M %m/%d/%Y %Z'))}"
+        label = f"{model} {str(modelDateTime.strftime('%H:%M %m/%d/%Y %Z'))}"
         tmpdict["label"] = label
         lyrName = fileName + ".lyrx"
         lyrPath = create_lyrx(filePath, fileName)
@@ -169,7 +177,7 @@ if __name__ == "__main__":
         mPub.addLayerToGroup(groupLyr, lyrFile, 'BOTTOM')#[0]
         lyr = groupLyr.listLayers()[-1]
         lyr.name = lyr.name.replace(lyr.name, label)
-        arcpy.management.ApplySymbologyFromLayer(lyr, symPath)
+        #arcpy.management.ApplySymbologyFromLayer(lyr, symPath)
         return lyr
 
     sortedData = sorted(metadata, key=lambda d: d['modelDateTime'])
@@ -189,7 +197,7 @@ if __name__ == "__main__":
             lyr = add_lyr_to_group(mPub, mPub.listLayers(models[1])[0], i["lyrPath"], i["label"], symPath)
             lyr.visible = first_lyr_1
             first_lyr_1 = False
-            
+        #    
         else:
             print(i["lyrPath"], "added to", models[2])
             symPath = symPath
